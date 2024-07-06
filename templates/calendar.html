@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar | Liquidmind.AI Invoice Automation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #512da8;
+            color: #fff;
+            padding: 10px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: #fff;
+            margin-right: 20px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin: 0 10px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ddd;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .user-profile span {
+            margin-right: 10px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background-color: #512da8;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #6a35b8;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 100px auto 20px; /* Adjusted margin to account for fixed header */
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calendar th, .calendar td {
+            width: 14.28%;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .calendar .date-picker {
+            cursor: pointer;
+        }
+
+        .calendar .date-picker.selected {
+            background-color: #512da8;
+            color: #fff;
+        }
+
+        .calendar .event-marker {
+            position: relative;
+        }
+
+        .calendar .event-tooltip {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 5px;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar .event-marker:hover .event-tooltip {
+            display: block;
+        }
+
+        .reminders {
+            margin-top: 20px;
+        }
+
+        .reminders ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .reminders li {
+            background-color: #fff;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .reminders .delete-event {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="{{ url_for('dashboard') }}" class="logo">Liquidmind.AI</a>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                    <li><a href="{{ url_for('vendors') }}">Vendors</a></li>
+                    <li><a href="{{ url_for('calendar') }}">Calendar</a></li>
+                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="navbar-right">
+                <div class="user-profile">
+                    <span>{{ user.msme_business_name }}</span>
+                    <div class="dropdown">
+                        <button class="dropbtn">Profile</button>
+                        <div class="dropdown-content">
+                            <a href="{{ url_for('profile') }}">View Profile</a>
+                            <a href="{{ url_for('logout') }}">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="calendar">
+            <h2>Calendar</h2>
+            <div class="controls">
+                <button onclick="previous()">Previous</button>
+                <button onclick="next()">Next</button>
+                <select id="month" onchange="jump()"></select>
+                <select id="year" onchange="jump()"></select>
+            </div>
+            <table id="calendar">
+                <thead id="thead-month"></thead>
+                <tbody id="calendar-body"></tbody>
+            </table>
+            <div id="monthAndYear"></div>
+        </div>
+        <div class="reminders">
+            <h3>Reminders</h3>
+            <ul id="reminderList"></ul>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

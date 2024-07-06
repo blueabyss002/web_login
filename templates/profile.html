@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Liquidmind.AI Invoice Automation</title>
+</head>
+<body>
+    <h1>Profile Page</h1>
+    <p>Name: {{ user.msme_business_name }}</p>
+    <p>Email: {{ user.email }}</p>
+    <p>ERP: {{ user.erp_system }}</p>
+    <p>Phone Number: {{ user.phone_number }}</p>
+    <p>Industry: {{ user.industry }}</p>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>
